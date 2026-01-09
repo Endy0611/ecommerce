@@ -56,7 +56,7 @@
     <div class="topbar">
         <a href="index.php" class="topbar-brand">
             <i class="fas fa-cube"></i>
-            ProductHub
+            Admin Community
         </a>
 
         <div class="topbar-search position-relative">

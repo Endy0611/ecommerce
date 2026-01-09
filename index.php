@@ -341,21 +341,21 @@
 </head>
 
 <body>
-    <!-- <?php
-    // Database connection
-    include_once 'config.php';
-    
-    // Get cart count (from session)
-    session_start();
-    $cartCount = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
-    
-    // Fetch products from database
-    $sql = "SELECT * FROM tblproduct ORDER BY pro_id DESC";
-    $result = $conn->query($sql);
-    
-    // Get product count for stats
-    $productCount = $result->num_rows;
-    ?> -->
+    <!--         <?php
+             // Database connection
+             include_once 'config.php';
+
+             // Get cart count (from session)
+             session_start();
+             $cartCount = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
+
+             // Fetch products from database
+             $sql    = "SELECT * FROM tblproduct ORDER BY pro_id DESC";
+             $result = $conn->query($sql);
+
+             // Get product count for stats
+         $productCount = $result->num_rows;
+         ?> -->
 
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
@@ -394,7 +394,7 @@
                     </button>
                     <button class="nav-icon-btn" onclick="location.href='cart.php'">
                         <i class="bi bi-cart3"></i>
-                        <?php if($cartCount > 0): ?>
+                        <?php if ($cartCount > 0): ?>
                         <span class="cart-badge"><?php echo $cartCount; ?></span>
                         <?php endif; ?>
                     </button>
@@ -424,39 +424,47 @@
             </div>
         </section>
 
-        <!-- Categories -->
+        <!-- Categories Section -->
         <section class="my-5">
+            <?php
+                $categorySql    = "SELECT * FROM tblcategory LIMIT 4";
+                $categoryResult = $conn->query($categorySql);
+                $bgColors       = ['bg-primary-subtle', 'bg-warning-subtle', 'bg-danger-subtle', 'bg-secondary-subtle'];
+                $colorIndex     = 0;
+            ?>
+
             <div class="row g-4">
-                <div class="col-md-3 col-sm-6">
-                    <div class="category-card" style="background: #D6E8F5;">
-                        <div class="category-icon">⌚</div>
-                        <h4>Smart Watch</h4>
-                        <p>Advanced Tracking</p>
+                <?php if ($categoryResult && $categoryResult->num_rows > 0): ?>
+                <?php while ($cat = $categoryResult->fetch_assoc()): ?>
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card h-100 text-center border-0 shadow-sm <?php echo $bgColors[$colorIndex % 4];?>">
+
+                        <div class="card-body">
+                            <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle bg-white"
+                                style="width:90px;height:90px;">
+                                <?php if (! empty($cat['cat_img']) && file_exists('images/' . $cat['cat_img'])): ?>
+                                <img src="images/<?php echo htmlspecialchars($cat['cat_img']);?>"
+                                    class="img-fluid rounded-circle"
+                                    alt="<?php echo htmlspecialchars($cat['cat_name']);?>">
+                                <?php else: ?>
+                                <span class="fs-2">📦</span>
+                                <?php endif; ?>
+                            </div>
+
+                            <h5 class="fw-semibold mb-0">
+                                <?php echo htmlspecialchars($cat['cat_name']);?>
+                            </h5>
+                        </div>
+
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="category-card" style="background: #F5E6D6;">
-                        <div class="category-icon">💻</div>
-                        <h4>Mac Book</h4>
-                        <p>Audio Diagnostic</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="category-card" style="background: #FFD6D6;">
-                        <div class="category-icon">📱</div>
-                        <h4>iPad Pro</h4>
-                        <p>Premium Display</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <div class="category-card" style="background: #E8E8E8;">
-                        <div class="category-icon">🏠</div>
-                        <h4>Smart Home</h4>
-                        <p>74+ Ideas</p>
-                    </div>
-                </div>
+                <?php $colorIndex++;endwhile; ?>
+                <?php else: ?>
+                <div class="col-12 text-center text-muted">No categories available</div>
+                <?php endif; ?>
             </div>
         </section>
+
 
         <!-- Stats Section -->
         <section class="stats-section">
@@ -500,20 +508,20 @@
 
             <div class="row g-4">
                 <?php
-                if($result->num_rows > 0) {
-                    while($row = $result->fetch_assoc()) {
-                        // Generate random badge for demo
-                        $badges = ['HOT', 'SALE', 'FEATURED', null];
-                        $randomBadge = $badges[array_rand($badges)];
-                        
-                        // Generate random rating
-                        $rating = rand(3, 5);
-                ?>
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            // Generate random badge for demo
+                            $badges      = ['HOT', 'SALE', 'FEATURED', null];
+                            $randomBadge = $badges[array_rand($badges)];
+
+                            // Generate random rating
+                            $rating = rand(3, 5);
+                        ?>
                 <div class="col-lg-3 col-md-4 col-sm-6">
                     <div class="card product-card">
                         <div class="product-image-container">
-                            <?php if($randomBadge): ?>
-                            <span class="product-badge <?php echo strtolower($randomBadge); ?>">
+                            <?php if ($randomBadge): ?>
+                            <span class="product-badge<?php echo strtolower($randomBadge); ?>">
                                 <?php echo $randomBadge; ?>
                             </span>
                             <?php endif; ?>
@@ -522,7 +530,7 @@
                                 <i class="bi bi-heart"></i>
                             </button>
 
-                            <?php if(!empty($row['img']) && file_exists('images/' . $row['img'])): ?>
+                            <?php if (! empty($row['img']) && file_exists('images/' . $row['img'])): ?>
                             <img src="images/<?php echo htmlspecialchars($row['img']); ?>"
                                 alt="<?php echo htmlspecialchars($row['pro_name']); ?>" class="product-image">
                             <?php else: ?>
@@ -533,24 +541,24 @@
                         <div class="product-info">
                             <h5 class="product-name"><?php echo htmlspecialchars($row['pro_name']); ?></h5>
 
-                            <?php if(!empty($row['size'])): ?>
+                            <?php if (! empty($row['size'])): ?>
                             <p class="text-muted small mb-2">
                                 <i class="bi bi-tag"></i> Size: <?php echo htmlspecialchars($row['size']); ?>
                             </p>
                             <?php endif; ?>
 
                             <div class="product-rating">
-                                <?php for($i = 0; $i < $rating; $i++): ?>
+                                <?php for ($i = 0; $i < $rating; $i++): ?>
                                 <i class="bi bi-star-fill"></i>
                                 <?php endfor; ?>
-                                <?php for($i = $rating; $i < 5; $i++): ?>
+                                <?php for ($i = $rating; $i < 5; $i++): ?>
                                 <i class="bi bi-star"></i>
                                 <?php endfor; ?>
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <div class="product-price">$<?php echo number_format($row['price'], 2); ?></div>
-                                <?php if(!empty($row['point'])): ?>
+                                <?php if (! empty($row['point'])): ?>
                                 <span class="badge bg-warning text-dark">
                                     <i class="bi bi-award"></i> <?php echo $row['point']; ?> pts
                                 </span>
@@ -558,7 +566,7 @@
                             </div>
 
                             <button class="btn-add-cart"
-                                onclick="addToCart(<?php echo $row['pro_id']; ?>, '<?php echo htmlspecialchars($row['pro_name']); ?>', <?php echo $row['price']; ?>)">
+                                onclick="addToCart(<?php echo $row['pro_id']; ?>, '<?php echo htmlspecialchars($row['pro_name']); ?>',<?php echo $row['price']; ?>)">
                                 <i class="bi bi-cart-plus me-2"></i>Add to Cart
                             </button>
                         </div>
@@ -566,8 +574,8 @@
                 </div>
                 <?php
                     }
-                } else {
-                ?>
+                    } else {
+                    ?>
                 <div class="col-12">
                     <div class="empty-state">
                         <i class="bi bi-inbox"></i>
@@ -576,8 +584,8 @@
                     </div>
                 </div>
                 <?php
-                }
-                $conn->close();
+                    }
+                    $conn->close();
                 ?>
             </div>
         </section>

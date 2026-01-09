@@ -4,48 +4,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Product - Amazone Store</title>
+    <title>Add Product - Admin Panel</title>
+
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
     :root {
         --primary-color: #4169E1;
         --secondary-color: #FF6B35;
+        --success-color: #10B981;
+        --warning-color: #F59E0B;
         --dark-color: #1a1a1a;
         --light-bg: #f8f9fa;
-        --success-color: #10B981;
     }
 
     body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #FFF5F0 0%, #FFE8E0 100%);
         min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
+        padding: 40px 0;
     }
 
     .form-container {
+        max-width: 600px;
+        margin: 0 auto;
         background: white;
         border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         padding: 40px;
-        max-width: 600px;
-        width: 100%;
-        animation: slideUp 0.5s ease-out;
-    }
-
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     }
 
     .form-header {
@@ -55,7 +44,7 @@
 
     .form-header h1 {
         font-size: 32px;
-        font-weight: 700;
+        font-weight: bold;
         color: var(--dark-color);
         margin-bottom: 10px;
     }
@@ -65,34 +54,22 @@
         font-size: 16px;
     }
 
-    .form-icon {
-        width: 80px;
-        height: 80px;
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        border-radius: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 20px;
-        font-size: 40px;
-        box-shadow: 0 10px 25px rgba(65, 105, 225, 0.3);
-    }
-
     .form-label {
         font-weight: 600;
         color: var(--dark-color);
-        margin-bottom: 8px;
+        margin-bottom: 10px;
         font-size: 14px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
     .form-control,
     .form-select {
-        border: 2px solid #e5e7eb;
         border-radius: 10px;
+        border: 2px solid #e0e0e0;
         padding: 12px 16px;
-        font-size: 16px;
+        font-size: 15px;
         transition: all 0.3s;
     }
 
@@ -100,282 +77,464 @@
     .form-select:focus {
         border-color: var(--primary-color);
         box-shadow: 0 0 0 4px rgba(65, 105, 225, 0.1);
-        outline: none;
     }
 
-    .file-input-wrapper {
+    .input-group-text {
+        background: var(--light-bg);
+        border: 2px solid #e0e0e0;
+        border-right: none;
+        border-radius: 10px 0 0 10px;
+        font-weight: 600;
+    }
+
+    .input-group .form-control {
+        border-left: none;
+        border-radius: 0 10px 10px 0;
+    }
+
+    .file-upload-wrapper {
         position: relative;
-        overflow: hidden;
-        display: inline-block;
-        width: 100%;
-    }
-
-    .file-input-wrapper input[type=file] {
-        position: absolute;
-        left: -9999px;
-    }
-
-    .file-input-label {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        padding: 40px;
-        border: 2px dashed #d1d5db;
+        border: 2px dashed #e0e0e0;
         border-radius: 10px;
-        cursor: pointer;
+        padding: 40px;
+        text-align: center;
         transition: all 0.3s;
+        cursor: pointer;
         background: var(--light-bg);
     }
 
-    .file-input-label:hover {
+    .file-upload-wrapper:hover {
         border-color: var(--primary-color);
-        background: #e0e7ff;
+        background: #f0f4ff;
     }
 
-    .file-input-label i {
-        font-size: 32px;
-        color: var(--primary-color);
+    .file-upload-wrapper.dragover {
+        border-color: var(--success-color);
+        background: #f0fdf4;
     }
 
-    .file-name {
-        margin-top: 10px;
-        font-size: 14px;
-        color: #666;
-        font-weight: 500;
-    }
-
-    .input-icon {
-        position: relative;
-    }
-
-    .input-icon i {
+    .file-upload-wrapper input[type="file"] {
         position: absolute;
-        left: 16px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #9ca3af;
-        font-size: 18px;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
     }
 
-    .input-icon .form-control {
-        padding-left: 45px;
+    .file-upload-icon {
+        font-size: 48px;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+    }
+
+    .file-upload-text {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .image-preview-container {
+        margin-top: 20px;
+        display: none;
+    }
+
+    .image-preview {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .remove-image-btn {
+        background: var(--secondary-color);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        margin-top: 10px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+    .remove-image-btn:hover {
+        background: #e55a2b;
+        transform: scale(1.05);
     }
 
     .btn-submit {
-        background: linear-gradient(135deg, var(--primary-color), #667eea);
+        width: 100%;
+        background: var(--primary-color);
         color: white;
         border: none;
-        padding: 15px 40px;
+        padding: 15px;
         border-radius: 10px;
         font-weight: 600;
-        font-size: 18px;
-        width: 100%;
-        cursor: pointer;
+        font-size: 16px;
         transition: all 0.3s;
         margin-top: 20px;
-        box-shadow: 0 10px 25px rgba(65, 105, 225, 0.3);
     }
 
     .btn-submit:hover {
+        background: #3557c7;
         transform: translateY(-2px);
-        box-shadow: 0 15px 35px rgba(65, 105, 225, 0.4);
-    }
-
-    .btn-submit:active {
-        transform: translateY(0);
+        box-shadow: 0 5px 15px rgba(65, 105, 225, 0.3);
     }
 
     .btn-back {
-        background: #6b7280;
-        color: white;
-        border: none;
-        padding: 12px 30px;
-        border-radius: 10px;
-        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--dark-color);
         text-decoration: none;
-        display: inline-block;
+        font-weight: 600;
+        margin-bottom: 20px;
         transition: all 0.3s;
-        margin-top: 15px;
     }
 
     .btn-back:hover {
-        background: #4b5563;
-        color: white;
-        transform: translateY(-2px);
-    }
-
-    .badge-info {
-        background: #e0e7ff;
         color: var(--primary-color);
-        padding: 5px 12px;
-        border-radius: 20px;
-        font-size: 12px;
+        transform: translateX(-5px);
+    }
+
+    .warning-box {
+        background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+        border-left: 4px solid #EF4444;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+
+    .warning-box strong {
+        color: #DC2626;
+        font-size: 18px;
+    }
+
+    .warning-box a {
+        color: #DC2626;
         font-weight: 600;
-        display: inline-block;
-        margin-bottom: 8px;
+        text-decoration: underline;
     }
 
-    .form-group {
-        margin-bottom: 25px;
+    .form-note {
+        font-size: 12px;
+        color: #666;
+        margin-top: 5px;
+        font-style: italic;
     }
 
-    @media (max-width: 576px) {
-        .form-container {
-            padding: 30px 20px;
+    .size-options {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    .size-option {
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        background: white;
+    }
+
+    .size-option:hover {
+        border-color: var(--primary-color);
+        background: #f0f4ff;
+    }
+
+    .size-option input[type="radio"] {
+        display: none;
+    }
+
+    .size-option input[type="radio"]:checked+label {
+        color: var(--primary-color);
+        font-weight: bold;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
         }
 
-        .form-header h1 {
-            font-size: 24px;
+        .size-options {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    .success-message {
+        background: var(--success-color);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        display: none;
+        animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
         }
 
-        .form-icon {
-            width: 60px;
-            height: 60px;
-            font-size: 30px;
+        to {
+            transform: translateY(0);
+            opacity: 1;
         }
     }
     </style>
 </head>
 
 <body>
-    <div class="form-container">
-        <div class="form-header">
-            <div class="form-icon">📦</div>
-            <h1>Add New Product</h1>
-            <p>Fill in the details to add a product to your store</p>
-        </div>
+    <?php
+    include_once '../config.php';
+    
+    // Fetch all brands with their categories for dropdown
+    $brands = [];
+    $result = $conn->query("SELECT b.brand_id, b.brand_name, c.cat_name 
+                           FROM tblbrand b 
+                           LEFT JOIN tblcategory c ON b.cat_id = c.cat_id
+                           WHERE b.status='active' 
+                           ORDER BY c.cat_name, b.brand_name ASC");
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $brands[] = $row;
+        }
+    }
+    ?>
 
-        <form method="POST" action="added_product.php" enctype="multipart/form-data" id="productForm">
-            <div class="form-group">
-                <label class="form-label">
-                    <i class="bi bi-tag me-1"></i> Product Name
-                </label>
-                <div class="input-icon">
-                    <i class="bi bi-box-seam"></i>
-                    <input type="text" name="txtname" class="form-control" placeholder="Enter product name" required>
-                </div>
+    <div class="container">
+        <a href="index.php" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+
+        <div class="form-container">
+            <div class="form-header">
+                <h1><i class="bi bi-box-seam"></i> Add New Product</h1>
+                <p>Fill in the details to add a new product to your store</p>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">
-                    <i class="bi bi-image me-1"></i> Product Image
-                </label>
-                <div class="file-input-wrapper">
-                    <input type="file" name="files" id="fileInput" accept="image/*" required>
-                    <label for="fileInput" class="file-input-label" id="fileLabel">
-                        <i class="bi bi-cloud-upload"></i>
-                        <div>
-                            <div style="font-weight: 600; color: var(--dark-color);">Click to upload image</div>
-                            <div style="font-size: 14px; color: #9ca3af;">PNG, JPG, GIF up to 5MB</div>
-                        </div>
+            <div class="success-message" id="successMessage">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                Product added successfully!
+            </div>
+
+            <?php if (count($brands) == 0): ?>
+            <div class="warning-box">
+                <strong><i class="bi bi-exclamation-triangle-fill me-2"></i>Warning!</strong>
+                <p class="mb-0 mt-2">No brands found. Please <a href="add_brand.php">add a brand</a> first before
+                    adding products!</p>
+            </div>
+            <?php else: ?>
+            <form method="post" action="added_product.php" enctype="multipart/form-data" id="productForm">
+                <!-- Brand Selection -->
+                <div class="mb-4">
+                    <label for="txtbrand" class="form-label">
+                        <i class="bi bi-award"></i> Brand
                     </label>
-                </div>
-                <div class="file-name" id="fileName"></div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">
-                    <i class="bi bi-rulers me-1"></i> Size / Variant
-                </label>
-                <div class="input-icon">
-                    <i class="bi bi-menu-button-wide"></i>
-                    <select name="txtsize" class="form-select" style="padding-left: 45px;" required>
-                        <option value="">Choose size...</option>
-                        <option value="Small">Small</option>
-                        <option value="Regular">Regular</option>
-                        <option value="Large">Large</option>
-                        <option value="Grand">Grand</option>
+                    <select name="txtbrand" id="txtbrand" class="form-select" required>
+                        <option value="">-- Select Brand --</option>
+                        <?php 
+                            $current_category = '';
+                            foreach ($brands as $brand): 
+                                if ($brand['cat_name'] != $current_category) {
+                                    if ($current_category != '') echo '</optgroup>';
+                                    $current_category = $brand['cat_name'];
+                                    echo '<optgroup label="' . htmlspecialchars($current_category) . '">';
+                                }
+                            ?>
+                        <option value="<?php echo htmlspecialchars($brand['brand_id']); ?>">
+                            <?php echo htmlspecialchars($brand['brand_name']); ?>
+                        </option>
+                        <?php 
+                            endforeach; 
+                            if ($current_category != '') echo '</optgroup>';
+                            ?>
                     </select>
+                    <div class="form-note">Select which brand this product belongs to</div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label class="form-label">
-                    <i class="bi bi-currency-dollar me-1"></i> Price
-                </label>
-                <div class="input-icon">
-                    <i class="bi bi-cash-coin"></i>
-                    <input type="number" name="txtprice" class="form-control" placeholder="0.00" step="0.01" min="0"
-                        required>
+                <!-- Product Name -->
+                <div class="mb-4">
+                    <label for="txtname" class="form-label">
+                        <i class="bi bi-tag"></i> Product Name
+                    </label>
+                    <input type="text" class="form-control" id="txtname" name="txtname" required
+                        placeholder="e.g., iPhone 15 Pro Max, MacBook Air M2">
+                    <div class="form-note">Enter a descriptive product name</div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label class="form-label">
-                    <i class="bi bi-award me-1"></i> Reward Points
-                </label>
-                <span class="badge-info">Optional - Leave blank for auto-calculation</span>
-                <div class="input-icon">
-                    <i class="bi bi-star"></i>
-                    <input type="number" name="txtpoint" class="form-control" placeholder="0" min="0">
+                <!-- Product Image -->
+                <div class="mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-image"></i> Product Image
+                    </label>
+                    <div class="file-upload-wrapper" id="fileUploadWrapper">
+                        <input type="file" name="files" id="fileInput" accept="image/*" required
+                            onchange="previewImage(event)">
+                        <div class="file-upload-icon">
+                            <i class="bi bi-cloud-upload"></i>
+                        </div>
+                        <div class="file-upload-text">
+                            <strong>Click to upload</strong> or drag and drop<br>
+                            <small>PNG, JPG or GIF (max. 5MB)</small>
+                        </div>
+                    </div>
+                    <div class="image-preview-container" id="imagePreviewContainer">
+                        <img id="imagePreview" class="image-preview" alt="Preview">
+                        <br>
+                        <button type="button" class="remove-image-btn" onclick="removeImage()">
+                            <i class="bi bi-trash"></i> Remove Image
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <button type="submit" name="btnadd" class="btn-submit">
-                <i class="bi bi-plus-circle me-2"></i>Add Product to Store
-            </button>
+                <!-- Size Selection -->
+                <div class="mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-rulers"></i> Size / Variant
+                    </label>
+                    <div class="size-options">
+                        <div class="size-option" onclick="selectSize('Small')">
+                            <input type="radio" name="txtsize" id="size_small" value="Small" required>
+                            <label for="size_small" style="cursor: pointer; display: block;">Small</label>
+                        </div>
+                        <div class="size-option" onclick="selectSize('Regular')">
+                            <input type="radio" name="txtsize" id="size_regular" value="Regular">
+                            <label for="size_regular" style="cursor: pointer; display: block;">Regular</label>
+                        </div>
+                        <div class="size-option" onclick="selectSize('Large')">
+                            <input type="radio" name="txtsize" id="size_large" value="Large">
+                            <label for="size_large" style="cursor: pointer; display: block;">Large</label>
+                        </div>
+                        <div class="size-option" onclick="selectSize('Grand')">
+                            <input type="radio" name="txtsize" id="size_grand" value="Grand">
+                            <label for="size_grand" style="cursor: pointer; display: block;">Grand</label>
+                        </div>
+                    </div>
+                    <div class="form-note">Choose product size or variant</div>
+                </div>
 
-            <div class="text-center">
-                <a href="index.php" class="btn-back">
-                    <i class="bi bi-arrow-left me-2"></i>Back to Store
-                </a>
-            </div>
-        </form>
+                <!-- Price and Points -->
+                <div class="form-row mb-4">
+                    <div>
+                        <label for="txtprice" class="form-label">
+                            <i class="bi bi-currency-dollar"></i> Price
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" id="txtprice" name="txtprice" step="0.01" min="0"
+                                required placeholder="0.00">
+                        </div>
+                        <div class="form-note">Enter product price in USD</div>
+                    </div>
+
+                    <div>
+                        <label for="txtpoint" class="form-label">
+                            <i class="bi bi-star"></i> Reward Points
+                        </label>
+                        <input type="number" class="form-control" id="txtpoint" name="txtpoint" min="0"
+                            placeholder="Auto-calculated">
+                        <div class="form-note">Leave empty for auto-calculation</div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" name="btnadd" class="btn-submit">
+                    <i class="bi bi-plus-circle me-2"></i>Add Product
+                </button>
+            </form>
+            <?php endif; ?>
+        </div>
     </div>
 
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-    // File input preview
-    const fileInput = document.getElementById('fileInput');
-    const fileLabel = document.getElementById('fileLabel');
-    const fileName = document.getElementById('fileName');
+    // Image Preview
+    function previewImage(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('imagePreview');
+        const container = document.getElementById('imagePreviewContainer');
+        const uploadWrapper = document.getElementById('fileUploadWrapper');
 
-    fileInput.addEventListener('change', function(e) {
-        if (this.files && this.files[0]) {
-            const file = this.files[0];
-            fileName.innerHTML = `<i class="bi bi-check-circle text-success me-2"></i>Selected: ${file.name}`;
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                container.style.display = 'block';
+                uploadWrapper.style.display = 'none';
+            }
+            reader.readAsDataURL(file);
+        }
+    }
 
-            fileLabel.style.borderColor = '#10B981';
-            fileLabel.style.background = '#d1fae5';
-            fileLabel.innerHTML = `
-                    <i class="bi bi-check-circle" style="color: #10B981; font-size: 32px;"></i>
-                    <div>
-                        <div style="font-weight: 600; color: #10B981;">Image Selected!</div>
-                        <div style="font-size: 14px; color: #059669;">${file.name}</div>
-                    </div>
-                `;
+    // Remove Image
+    function removeImage() {
+        document.getElementById('fileInput').value = '';
+        document.getElementById('imagePreviewContainer').style.display = 'none';
+        document.getElementById('fileUploadWrapper').style.display = 'block';
+    }
+
+    // Size Selection
+    function selectSize(size) {
+        document.getElementById('size_' + size.toLowerCase()).checked = true;
+
+        // Update visual selection
+        document.querySelectorAll('.size-option').forEach(opt => {
+            opt.style.borderColor = '#e0e0e0';
+            opt.style.background = 'white';
+        });
+
+        event.currentTarget.style.borderColor = 'var(--primary-color)';
+        event.currentTarget.style.background = '#f0f4ff';
+    }
+
+    // Drag and Drop
+    const uploadWrapper = document.getElementById('fileUploadWrapper');
+
+    uploadWrapper.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadWrapper.classList.add('dragover');
+    });
+
+    uploadWrapper.addEventListener('dragleave', () => {
+        uploadWrapper.classList.remove('dragover');
+    });
+
+    uploadWrapper.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadWrapper.classList.remove('dragover');
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            document.getElementById('fileInput').files = files;
+            previewImage({
+                target: {
+                    files: files
+                }
+            });
         }
     });
 
-    // Form validation
-    const form = document.getElementById('productForm');
-    form.addEventListener('submit', function(e) {
-        const price = parseFloat(document.querySelector('input[name="txtprice"]').value);
-
-        if (price <= 0) {
-            e.preventDefault();
-            alert('Please enter a valid price greater than 0');
-            return false;
-        }
-
-        // Show loading state
-        const submitBtn = form.querySelector('.btn-submit');
-        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Adding Product...';
-        submitBtn.disabled = true;
-    });
-
-    // Auto-calculate reward points based on price
-    const priceInput = document.querySelector('input[name="txtprice"]');
-    const pointsInput = document.querySelector('input[name="txtpoint"]');
-
-    priceInput.addEventListener('input', function() {
-        if (!pointsInput.value) {
-            const price = parseFloat(this.value) || 0;
-            const calculatedPoints = Math.round(price / 10);
-            pointsInput.placeholder = `Suggested: ${calculatedPoints} points`;
-        }
-    });
+    // Show success message if redirected
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === 'true') {
+        document.getElementById('successMessage').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('successMessage').style.display = 'none';
+        }, 3000);
+    }
     </script>
 </body>
 
